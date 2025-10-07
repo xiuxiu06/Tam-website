@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Modak&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link
+      href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' 
+      rel='stylesheet'
+    />
+    <link 
+        href='https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css' 
+        rel='stylesheet'>
+    <title>Document</title>
+</head>
+
+<body>
+<!-- Navigation bar ---------------------------------------------------------- -->
+    <nav>
+      <a href="#" class="logo"><span>Tam Le</span></a>
+      <ul class="links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </ul>
+        <button id="menu" class="menu-toggle" aria-expanded="false" aria-label="Open menu">
+            <i class="bx bx-menu-right" aria-hidden="true"></i>
+        </button>
+        <button class="nav-btn">Contact</button>
+    </nav>
+<!-- Smooth scrolling wrapper ------------------------------------------------ -->
+    <div id="smooth-wrapper">
+        <div id="smooth-content">
+
+            <section class="page" id="Home">
+                <div class="hero-title">TAM LE</div>
+                <div id="hero-img" data-speed="0.5">
+                    <img src="/elements/char 2.png" alt="">
+                </div>
+            </section>
+
+<!-- Running banner: two stacked lines that move in opposite directions on scroll -->
+            <div class="page" id="running-banner">
+                <div class="running-banner">
+                    <div class="banner-line line1" aria-hidden="true">
+                        <div class="item">Design</div>
+                        <div class="item">Code</div>
+                        <div class="item">Create</div>
+                        <div class="item">Design</div>
+                        <div class="item">Code</div>
+                        <div class="item">Create</div>
+                    </div>
+
+                    <div class="banner-line line2" aria-hidden="true">
+                        <div class="logo-item"><i class='bxl  bx-react'></i> </div>
+                        <div class="logo-item"><i class='bxl  bx-javascript'  ></i> </div>
+                        <div class="logo-item"><i class='bxl  bx-html5'  ></i> </div>
+                        <div class="logo-item"><i class='bxl  bx-css3'  ></i> </div>
+                        <div class="logo-item"><i class='bxl  bx-python'  ></i> </div>
+                        <div class="logo-item"><i class='bxl  bx-c'  ></i> </div>
+                        <div class="logo-item"><i class='bxl  bx-figma'  ></i> </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- About Me section --------------------------------------------------------- -->
+            <section class="page" id="About">
+                    <div class="about-left">
+                        <h1 data-speed="1.2">Hello,</h1>
+                        <h1 data-speed="1.2">I'm <span>Tam</span> !</h1>
+                        <p class="about-bold">
+                           I’m a Computer Science Major passionate about software and AI!
+                        </p>
+                        <p>
+                            With a background in graphic design, I blend technical skills with creativity to craft engaging and accessible digital
+                            experiences. I'm passionate about building impactful software and exploring AI to solve real problems.
+                        </p>
+
+                        <div class="about-actions" data-speed="1.1">
+                            <a class="contact-btn" href="#contact">Contact</a>
+                            <a class="resume-btn" href="./elements/Le_Tam_Resume_2025.pdf" download>Resume</a>
+                        </div>
+                    </div>
+
+                    <div class="about-right" data-speed="1.2">
+                        <img class="about-photo" src="./elements/Tam.png" alt="Tam photo">
+                    </div>
+            </section>
+
+
+
+<!-- Horizontal Scroll Container (Projects) ----------------------------------------- -->
+
+            <section class="page projects-header" id="projects-header">
+                <div class="projects-title-wrap">
+                    <h2 class="projects-title">My Projects</h2>
+                    <p class="projects-subtitle">Selected work — scroll to explore!</p>
+                </div>
+            </section>
+
+            <div class="horizontal-container" id="projects">
+                <div class="horizontal-sections">
+                    <div class="horizontal-section project" id="project-1">
+                        <div class="project-card">
+                            <div class="project-left">
+                                <div class="project-number">01</div>
+                                <h3 class="project-title">Potato Disease AI Classifier</h3>
+                                    <div class="project-video">
+                                        <video controls muted playsinline poster="/elements/demo1-poster.jpg" preload="none">
+                                            <source data-src="./elements/demo1.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <button class="play-overlay" aria-label="Play demo"><span class="play-icon">▶</span></button>
+                                    </div>
+                                <p class="project-desc">An innovative AI-powered solution for real-time potato disease 
+                                    detection. This full-stack application leverages TensorFlow for deep learning, FastAPI
+                                     for a robust backend, and React with Material UI for an intuitive frontend. 
+                                     The system processes leaf images to deliver accurate disease classifications 
+                                     with confidence scores.</p>
+                                <div class="project-actions">
+                                    <a class="btn demo-btn" href="https://xiuxiu06.github.io/potato-disease-app/" target="_blank" rel="noopener">Live Demo</a>
+                                    <a class="btn repo-btn" href="https://github.com/xiuxiu06/potato-disease-app" target="_blank" rel="noopener">Explore More</a>
+                                </div>
+                            </div>
+                                <aside class="project-tech">
+                                    <div class="tech-list">
+                                        <button class="tech-tag">JavaScript</button>
+                                        <button class="tech-tag">FastAPI</button>
+                                        <button class="tech-tag">React</button>
+                                        <button class="tech-tag">TensorFlow</button>
+                                        <button class="tech-tag">Material UI</button>
+                                        <button class="tech-tag">Quarto</button>
+                                    </div>
+                                </aside>
+                        </div>
+                    </div>
+
+                    <div class="horizontal-section project" id="project-2">
+                        <div class="project-card">
+                            <div class="project-left">
+                                <div class="project-number">02</div>
+                                <h3 class="project-title">Movie Discovery App</h3>
+                                    <div class="project-video">
+                                            <video controls muted playsinline poster="/elements/demo2-poster.jpg" preload="none">
+                                                <source data-src="./elements/demo2.mp4" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <button class="play-overlay" aria-label="Play demo"><span class="play-icon">▶</span></button>
+                                    </div>
+                                <p class="project-desc">A cutting-edge React application designed for seamless movie exploration. Features include infinite scrolling, debounced search, and trending recommendations powered by the TMDB API. The app boasts a modern ES6+ JavaScript architecture and a responsive UI crafted with Tailwind CSS and glassmorphism effects.</p>
+                                <div class="project-actions">
+                                    <a class="btn demo-btn" href="https://xiuxiu06.github.io/movie-app/" target="_blank" rel="noopener">Live Demo</a>
+                                    <a class="btn repo-btn" href="https://github.com/xiuxiu06/movie-app" target="_blank" rel="noopener">Explore More</a>
+                                </div>
+                            </div>
+                                <aside class="project-tech">
+                                        <div class="tech-list">
+                                            <button class="tech-tag">React.js</button>
+                                            <button class="tech-tag">Tailwind CSS</button>
+                                            <button class="tech-tag">TMDB API</button>
+                                        </div>
+                                </aside>
+                        </div>
+                    </div>
+
+                    <div class="horizontal-section project" id="project-3">
+                        <div class="project-card">
+                            <div class="project-left">
+                                <div class="project-number">03</div>
+                                <h3 class="project-title">My Personal Portfolio Website (This Website!)</h3>
+                                    <div class="project-video">
+                                            <video controls muted playsinline poster="/elements/demo3-poster.jpg" preload="none">
+                                                <source data-src="/elements/demo3.mp4" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <button class="play-overlay" aria-label="Play demo"><span class="play-icon">▶</span></button>
+                                    </div>
+                                <p class="project-desc">A responsive and interactive personal portfolio website featuring advanced motion design and custom animations. Built with vanilla JavaScript, GSAP animations, and a dynamic canvas-based starry background. Showcases projects, skills, and contact information with smooth scrolling effects and custom cursor interactions.</p>
+                                <div class="project-actions">
+                                    <a class="btn demo-btn" href="#" target="_blank" rel="noopener">Live Demo</a>
+                                    <a class="btn repo-btn" href="#" target="_blank" rel="noopener">Explore More</a>
+                                </div>
+                            </div>
+                                    <aside class="project-tech">
+                                        <div class="tech-list">
+                                            <button class="tech-tag">HTML</button>
+                                            <button class="tech-tag">CSS</button>
+                                            <button class="tech-tag">JavaScript</button>
+                                            <button class="tech-tag">GSAP</button>
+                                        </div>
+                                    </aside>
+                        </div>
+                    </div>
+
+                    <div class="horizontal-section project" id="project-4">
+                        <div class="project-card">
+                            <div class="project-left">
+                                <div class="project-number">04</div>
+                                <h3 class="project-title">Recipe-sharing platform</h3>
+                                <div class="project-video">
+                                    <video controls muted playsinline preload="metadata">
+                                        <source data-src="/elements/demo4.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                    </video>
+                                    <button class="play-overlay" aria-label="Play demo"><span class="play-icon">▶</span></button>
+                                </div>
+                                <p class="project-desc">A dynamic platform for sharing recipes and engaging with an AI-powered chatbot. Developed during a hackathon, this project integrates SQLite3 for efficient data storage, OpenAI API for intelligent chatbot interactions, and Streamlit for a user-friendly interface. Ideal for food enthusiasts and tech-savvy users alike.</p>
+                                <div class="project-actions">
+                                    <a class="btn demo-btn" href="#" target="_blank" rel="noopener">Live Demo</a>
+                                    <a class="btn repo-btn" href="#" target="_blank" rel="noopener">Explore More</a>
+                                </div>
+                            </div>
+                            <aside class="project-tech">
+                                <div class="tech-list">
+                                    <button class="tech-tag">Python</button>
+                                    <button class="tech-tag">Streamlit</button>
+                                    <button class="tech-tag">Pandas</button>
+                                    <button class="tech-tag">OpenAI API</button>
+                                    <button class="tech-tag">SQLite3</button>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- Contact section ---------------------------------------------------------- -->
+            <section class="page contact" id="contact">
+                <div class="contact-inner">
+                    <div class="contact-left">
+                        <h1>Let&rsquo;s<br>get in<br>touch!</h1>
+                    </div>
+                    <div class="contact-right">
+                        <div class="contact-card">
+                            <p><strong>Email:</strong> <a href="mailto:le3t6@mail.uc.edu">le3t6@mail.uc.edu</a></p>
+                            <p><strong>Github:</strong> <a href="https://github.com/xiuxiu06" target="_blank" rel="noopener">github.com/xiuxiu06</a></p>
+                            <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/tamle06/" target="_blank" rel="noopener">linkedin.com/in/tamle06/</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                        <!-- Footer -->
+            <footer class="site-footer" id="site-footer">
+                <div class="footer-inner">
+                    <div class="footer-left">
+                        <div class="footer-item">
+                            <i class="bx bx-location"></i>
+                            <span>Cincinnati, Ohio</span>
+                        </div>
+                        <div class="footer-item">
+                            <i class="bx bx-envelope"></i>
+                            <a href="mailto:le3t6@mail.uc.edu">le3t6@mail.uc.edu</a>
+                        </div>
+                    </div>
+                    <div class="footer-right">
+                        <h4>Fun fact about me!</h4>
+                        <p>I love coding almost as much as I love ice-cream! When I'm not debugging, you can find me sketching random doodles or binge-watching sci-fi movies. Check out my Behance for some artsy surprises!</p>
+                        <div class="footer-socials">
+                            <a href="https://www.linkedin.com/in/tamle06/" aria-label="LinkedIn" class="social-link"><i class="bxl bx-linkedin-square"></i></a>
+                            <a href="https://www.behance.net/TamLe06" aria-label="Behance" class="social-link"><i class="bxl bx-behance"></i></a>
+                            <a href="https://github.com/xiuxiu06" aria-label="GitHub" class="social-link"><i class="bxl bx-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div> 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  scroll-behavior: smooth;
+}
+
+:root {
+  --background: rgb(0, 0, 0);
+  --second-background: #fff9e9;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+
+/* Hide/show nav smoothly when user scrolls */
+.nav-hidden {
+  transform: translateY(-120%);
+  transition: transform 260ms cubic-bezier(.2,.9,.2,1);
+  pointer-events: none; /* avoid accidental clicks when hidden */
+  opacity: 0;
+}
+
+/* When visible, ensure transform is reset and interactive */
+nav:not(.nav-hidden) {
+  transform: translateY(0);
+  transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;
+  pointer-events: auto;
+  opacity: 1;
+}
+/* Page container styles */
+.page {
+  width: 100%;
+  height: 100%vh;
+  background-color: #000000;
+  position: relative; /* allow absolute centering of hero title */
+}
+
+
+
+.box {
+    width: 200px;
+    height: 200px;
+    background-color: #67c2ff;
+    margin: 20px auto;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+/* Navigation styles */
+nav{
+    font-family: "modak", cursive;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 1em 15%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(15,15,15,0.8);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+.links {
+  margin: 0 auto;
+  /* use a CSS variable so the nav gap is easy to tweak */
+  --nav-gap: 2.25rem; /* increase this value to make items further apart */
+  display: flex;
+  gap: var(--nav-gap);
+  align-items: center;
+}
+
+/* Hide the menu icon on larger screens so it doesn't affect centering */
+#menu {
+  display: none;
+}
+
+/* Show menu icon on small screens and make nav responsive */
+@media (max-width: 800px) {
+  #menu { display: block; }
+  nav { padding: 1em; }
+  .links { display: none; }
+}
+
+/* Small adjustments for menu toggle button */
+.menu-toggle {
+  background: transparent;
+  border: none;
+  color: var(--second-background);
+  font-size: 1.6rem;
+  display: none; /* shown only on small screens via media query */
+  cursor: pointer;
+}
+.menu-toggle:focus { outline: 3px solid rgba(154,235,163,0.14); outline-offset: 3px }
+
+@media (max-width: 800px) {
+  .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+}
+
+/* When the nav has .menu-open, show the stacked links and lock body scroll */
+nav.menu-open .links { display: flex; }
+body.menu-open { overflow: hidden; }
+
+/* Mobile menu open state: show links as a stacked panel */
+nav.menu-open .links {
+  display: flex;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.92);
+  padding: 1rem 1.25rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 1100;
+}
+
+#menu { cursor: pointer; }
+
+nav ul a:hover{
+  opacity: 1;
+}
+
+.links a{
+  color: var(--second-background);
+  opacity: 0.8;
+  transition: 0.2s ease-in-out;
+}
+
+.logo{
+  font-size: 2em;
+  color: #9AEBA3;
+  transition: 0.2s ease-in-out;
+}
+.logo:hover{
+  opacity: 1;
+}
+
+/* Nav button (Contact Me) */
+.nav-btn {
+    font-family: "modak", cursive;
+  background: #9AEBA3;
+  border: none;
+  padding: 0.6em 1.1em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s;
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(91, 161, 255, 0.22);
+}
+
+.nav-btn:focus {
+  outline: 3px solid rgba(102, 164, 255, 0.28);
+  outline-offset: 2px;
+}
+
+/* legacy .main-nav was used previously; nav spacing is now controlled via .links and --nav-gap */
+.main-nav { display: none; }
+
+.main-nav a {
+  color: var(--second-background);
+  font-size: 1.25rem;
+  font-family: 'Modak', cursive;
+  text-decoration: none;
+  line-height: 1.75rem;
+}
+
+/* Hero Section Styles --------------------------------------------*/
+.hero-section {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background: black;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-title {
+  position: absolute;
+  width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--second-background);
+  font-family: 'Modak', cursive;
+  font-size: clamp(13rem, 24vw, 25rem); /* responsive */
+  line-height: 1;
+  pointer-events: none; /* decorative */
+  margin: 0;
+}
+
+#hero-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 210px;
+}
+
+#hero-img img {
+  /* responsive hero image: scales between 160px and 400px depending on viewport */
+  width: 100%;
+  max-width: clamp(250px, 28vw, 400px);
+  height: auto;
+}
+
+/* Running banner styles ---------------------------------------------------------------*/
+.running-banner {
+  width: 100%;
+  overflow: hidden;
+  padding: 2rem 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.6), rgba(10,10,10,0.6));
+}
+
+.banner-line {
+  display: flex;
+  gap: var(--banner-gap, 2rem);
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Make each banner item equal width so gaps are visually consistent */
+.banner-line .item,
+.banner-line .logo-item {
+  --banner-item-width: 12rem; /* change this to increase/decrease spacing */
+  flex: 0 0 var(--banner-item-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Modak', cursive;
+  color: var(--second-background);
+  padding: 0.25rem 0.5rem;
+  font-size: 50px;
+}
+
+.banner-line.line1 { padding: 1rem 0; }
+
+.banner-line.line2 { 
+  padding: 0.5rem 0; 
+  opacity: 0.95; 
+}
+
+/* Slight visual differences for logos */
+.banner-line .logo-item {
+  font-size: 5rem;
+  color: #9AEBA3;
+}
+
+/* Make lines wide so they can scroll smoothly */
+.banner-line .item, .banner-line .logo-item { min-width: 10rem; text-align: center; }
+
+/* About me style -----------------------------------------------------------------------*/
+#About {
+  display: flex;
+  gap: 4.5rem;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--second-background);
+  padding: 8rem 15%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+.about-left {
+  flex: 1 1 560px;
+  min-width: 260px;
+  margin: 0;
+  padding: 1rem 0;
+}
+
+.about-left h1 { 
+  font-family: 'Modak', 'Montserrat', sans-serif;
+  /* clamp(min, preferred, max) */
+  font-size: clamp(6rem, 6vw, 4.2rem);
+  margin: 0 0 1rem 0;
+  line-height: 0.9;
+  color: #081018;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  font-weight: 400;
+}
+
+.about-left span {
+  /* keep the green fill but add a thin dark stroke */
+  color: #9AEBA3;
+  -webkit-text-stroke: 2.5px #000000;
+}
+
+.about-left .about-bold { 
+  font-size:1.6rem; 
+  font-weight:600; 
+  margin-bottom:1rem; 
+  font-family: 'Montserrat', sans-serif;
+}
+
+.about-left p {
+  display: block;
+  max-width: 700px;
+  width: 100%;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  color: #000000;
+  font-family: 'Montserrat', sans-serif;
+  margin: 1.5rem 0 2.5rem 0;
+  text-align: justify;
+  text-align-last: left;
+}
+
+.about-actions { 
+  display:flex; 
+  gap:1rem; 
+  align-items:center 
+}
+.btn { display:inline-block; 
+  padding:.6rem 1rem; 
+  border-radius:999px; 
+  text-decoration:none; 
+  font-weight:600 
+}
+.contact-btn {
+  font-family:  "modak", cursive;
+  background: #9AEBA3;
+  color: #000000;
+  border-radius: 999px; /* pill-shaped */
+  padding: .6rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s;
+}
+
+.contact-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.03) saturate(1.06);
+  background: linear-gradient(90deg, #9AEBA3, #7FE79A);
+}
+.contact-btn:focus { outline: 3px solid rgba(102,164,255,0.28); outline-offset: 2px; }
+
+.resume-btn {
+  font-family:  "modak", cursive;
+  background: #000000;
+  color: #9AEBA3;
+  border-radius: 999px; /* pill-shaped */
+  padding: .6rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s;
+}
+.resume-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.05) saturate(1.08);
+  /* dark button gains a slight sheen on hover */
+  background: linear-gradient(90deg, #000000, #1a1a1a);
+}
+.resume-btn:focus { outline: 3px solid rgba(154,235,163,0.18); outline-offset: 2px; }
+
+/* legacy breakpoint removed; responsive rules are handled by the 900px and 520px media queries above */
+
+
+.about-right {
+  /* container that sizes to the image so the decorative box can stack beneath */
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 1rem 0;
+  position: relative; /* containing block for absolute background box */
+  box-sizing: border-box;
+}
+
+.about-photo {
+  width: 100%;
+  /* constrain the image so it doesn't dominate smaller screens */
+  max-width: clamp(220px, 35vw, 420px);
+  height: auto;
+  display: flex;
+  border-radius: 10px;
+  position: relative;
+  z-index: 2; /* sit above the decorative background box */
+  object-fit: cover;
+}
+
+/* background-box removed */
+
+/* Horizontal scrolling styles ---------------------------------------------------------*/
+.horizontal-container {
+    height: 100vh;
+    overflow: hidden;
+    background: #000000;
+}
+
+.horizontal-sections {
+    display: flex;
+    width: 400%; /* Adjust based on number of sections */
+    height: 100%;
+}
+
+.horizontal-section {
+    width: 25%; /* 100% / number of sections */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+    border-right: 2px solid #444;
+}
+
+/* Project slide/card styles -----------------------------------------------------------------------*/
+.horizontal-section.project {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  box-sizing: border-box;
+}
+
+.project-card {
+  display: flex;
+  gap: 2rem;
+  align-items: stretch;
+  width: min(1100px, 90%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: var(--second-background);
+}
+
+.project-left {
+  flex: 1 1 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.project-number {
+  font-family: 'Modak', cursive;
+  font-size: 2rem;
+  color: #9AEBA3;
+}
+
+.project-title {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.project-video {
+  width: 100%;
+  max-height: 360px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000;
+}
+.project-video video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Play overlay on lazy videos */
+.project-video { position: relative; }
+.play-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.45);
+  color: var(--second-background);
+  border: none;
+  padding: 0.6rem 0.8rem;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.play-icon { font-size: 1.15rem; }
+
+/* Tech tags appear like small buttons */
+.tech-list {
+  display: flex;
+  flex-wrap: wrap; /* allow chips to wrap into multiple rows */
+  gap: 0.5rem 0.6rem;
+  justify-content: center;
+  align-items: center;
+}
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(255,255,255,0.02);
+  color: #cfead3;
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: .45rem .85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: .95rem;
+  transition: background 160ms ease, color 160ms ease; /* simplified transitions */
+  position: relative;
+}
+.tech-tag::before {
+  /* keep the subtle dot for visual interest */
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(154,235,163,0.95);
+  display: inline-block;
+  transform: translateY(-.5px);
+  margin-right: .45rem;
+}
+.tech-tag:hover {
+  /* gentle hover highlight only */
+  background: rgba(154,235,163,0.06);
+}
+.tech-tag:focus {
+  outline: 3px solid rgba(154,235,163,0.12);
+  outline-offset: 4px;
+}
+.tech-tag.active {
+  background: linear-gradient(90deg, #9AEBA3, #7FE79A);
+  color: #081018;
+}
+
+@media (max-width: 900px) {
+  #About { flex-direction: column; align-items: flex-start; padding: 2.5rem 4%; }
+  .about-right { order: -1; width: 100%; flex-basis: 100%; margin-bottom: 1rem; min-height: auto; }
+  .about-left { flex-basis: 100%; }
+  /* tighten the max-width on medium screens */
+  .about-photo { max-width: clamp(180px, 45vw, 360px); }
+  /* decorative box removed */
+}
+
+@media (max-width: 520px) {
+  #About { padding: 2rem 1rem; }
+  /* ensure the photo remains proportionate on small phones */
+  .about-photo { max-width: clamp(140px, 60vw, 320px); }
+}
+.project-actions { display:flex; gap: 1rem; margin-top: 0.5rem }
+.project-actions .btn { padding: .6rem .9rem; border-radius: 8px; font-size: 1rem }
+.demo-btn { background: #9AEBA3; color: #081018 }
+.repo-btn { background: transparent; color: #9AEBA3; border: 1px solid rgba(154,235,163,0.18) }
+
+.project-tech {
+  width: 220px;
+  flex: 0 0 220px;
+  border-left: 1px solid rgba(255,255,255,0.04);
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .5rem;
+}
+.project-tech h4 { margin: 0 0 .25rem 0; font-size: 1rem }
+.project-tech ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .4rem }
+.project-tech li { font-size: .95rem; color: #cfead3 }
+
+@media (max-width: 900px) {
+  .project-card { flex-direction: column; width: 95%; }
+  .project-tech { width: 100%; flex-basis: auto; border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.04); padding-top: .75rem }
+  .project-number { font-size: 1.6rem }
+}
+
+.horizontal-section h2 {
+    margin-bottom: 30px;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Projects header (precedes horizontal projects) */
+.projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(160px, 25vh, 220px);
+  background: #000000;
+}
+.projects-title-wrap { text-align: center; }
+.projects-title { 
+  font-family: "Modak", cursive;
+  font-weight: 400;
+  font-size: clamp(3rem, 6vw, 4.2rem);
+  margin: 0;
+  color: var(--second-background);
+}
+.projects-subtitle { opacity: 0.9; margin-top: 0.4rem; color: #cfead3; }
+
+/* Contact section styles --------------------------------------------------------------------------- */
+.contact {
+  background: #F6EFDD;
+  color: #081018;
+  min-height: 100vh; /* full viewport */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contact-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  padding: 2.5rem 6%;
+}
+.contact-left h1 { font-family: 'Modak', cursive; font-weight: 400; font-size: clamp(3.2rem, 9vw, 6rem); line-height: 0.92; margin: 0; color: #081018; }
+.contact-right { flex: 0 0 540px; display: flex; justify-content: center; }
+.contact-card { background: #000; color: var(--second-background); padding: 3rem; border-radius: 20px; width: min(540px, 100%); box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
+.contact-card p { margin: 0 0 1rem 0; font-size: 1.05rem; }
+.contact-card a { color: var(--second-background); text-decoration: underline; }
+
+@media (max-width: 900px) {
+  .contact-inner { flex-direction: column; align-items: flex-start; padding: 2rem 4%; }
+  .contact-right { width: 100%; margin-top: 1.5rem }
+  .contact-card { width: 100%; }
+}
+
+/* Footer styles */
+.site-footer { background: #000000; color: #F6EFDD; padding: 3.5rem 16%; }
+.footer-inner { max-width: 1200px; margin: auto; display: flex; gap: 6rem; align-items: center; justify-content: space-between; }
+.footer-left { display: flex; flex-direction: column; gap: 1.25rem; min-width: 220px;}
+.footer-item { display: flex; align-items: center; gap: 0.8rem; font-size: 1rem; }
+.footer-item i { font-size: 1.15rem; color: #F6EFDD;}
+.footer-item a { color: inherit; text-decoration: none; }
+.footer-right { max-width: 760px; }
+.footer-right h4 { margin: 0 0 0.6rem 0; font-size: 1.05rem; }
+.footer-right p { margin: 0 0 1rem 0; line-height: 1.5; }
+.footer-socials { display: flex; gap: 1rem;}
+.social-link { display: inline-flex; align-items: center; justify-content: center; background: #000; color: var(--second-background); text-decoration: none; }
+.social-link i { font-size: 2rem; color: var(--second-background);}
+
+@media (max-width: 820px) {
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .footer-left { flex-direction: row; gap: 1rem; }
+  .footer-right { margin-top: 1rem; }
+}
+
+/* Hide the about photo entirely on small screens to save space/bandwidth */
+@media (max-width: 640px) {
+  .about-photo {
+    display: none;
+  }
+}
