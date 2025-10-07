@@ -219,6 +219,47 @@ nav ul a:hover{
   height: auto;
 }
 
+/* Spin container: positioned so half of it sits outside the left edge of the viewport
+   and the visible half overlaps the hero image. Placed inside the #Home .page
+   which already has position:relative. */
+.spin-container1 {
+  position: absolute;
+  left: 0; /* align to left edge of the page */
+  top: 250px;
+  transform: translate(-50%, -50%); /* move half its width offscreen to the left */
+  width: clamp(160px, 16vw, 260px); /* responsive size */
+  height: auto;
+  z-index: 750; /* sit above hero graphics but below nav */
+  pointer-events: none; /* decorative only; let clicks pass through */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spin-container2{
+  position: absolute;
+  right: 0; /* align to left edge of the page */
+  top: 500px;
+  transform: translate(50%, 50%); /* move half its width offscreen to the left */
+  width: clamp(160px, 16vw, 260px); /* responsive size */
+  height: auto;
+  pointer-events: none; /* decorative only; let clicks pass through */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#spinImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform-origin: 50% 50%; /* ensures proper rotation center */
+}
+
+
+
+
+
 /* Running banner styles ---------------------------------------------------------------*/
 .running-banner {
   width: 100%;
@@ -657,3 +698,18 @@ nav ul a:hover{
     display: none;
   }
 }
+
+/*SVG Path styles for animated SVGs -----------------------------------------------------*/
+svg {
+  overflow: visible;
+  height: 100%;
+  
+  /* Fix Safari rendering bug */
+  transform: translateZ(0);
+}
+
+path {
+  stroke-width: 2;
+  stroke: gray;
+}
+

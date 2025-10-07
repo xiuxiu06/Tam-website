@@ -1,4 +1,4 @@
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother, MotionPathPlugin);
 
 document.addEventListener('DOMContentLoaded', () => {
   // Try to create the ScrollSmoother (fail gracefully if not available)
@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const src = video.querySelector('source[data-src]');
         if (src && !src.src) { src.src = src.getAttribute('data-src'); video.load(); }
       };
-
       const playVideo = (sec) => { const v = sec.querySelector('video'); const overlay = sec.querySelector('.play-overlay'); if (!v) return; ensureVideoLoaded(v); if (overlay) overlay.style.display = 'none'; v.play().catch(() => {}); };
       const pauseVideo = (sec) => { const v = sec.querySelector('video'); if (v) try { v.pause(); } catch (e) {} };
 
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Video lazy load + play overlay
+  // lazy video play overlay
   $$('.project-video').forEach(pv => {
     const video = pv.querySelector('video');
     const src = video ? video.querySelector('source[data-src]') : null;
@@ -68,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn && video) btn.addEventListener('click', () => { load(); btn.style.display = 'none'; video.play().catch(() => {}); });
   });
 
-  // Tech chips: temporary active state
+  // tech chips
   const TECH_ACTIVE_DURATION = 1400;
   $$('.tech-tag').forEach(tag => {
     if (!tag.hasAttribute('role')) tag.setAttribute('role', 'button');
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tag.addEventListener('click', activate); tag.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
   });
 
-  // Running banner
+  // running banner
   const runningBanner = $('#running-banner');
   if (runningBanner) {
     const l1 = runningBanner.querySelector('.line1');
@@ -87,52 +86,23 @@ document.addEventListener('DOMContentLoaded', () => {
     extend(l1); extend(l2); gsap.set(l1, { xPercent: 0 }); gsap.set(l2, { xPercent: -50 }); gsap.timeline({ scrollTrigger: { trigger: runningBanner, start: 'top center', end: '+=800', scrub: true } }).to(l1, { xPercent: -50, ease: 'none' }, 0).to(l2, { xPercent: 0, ease: 'none' }, 0);
   }
 
-  // Nav behavior: mobile toggle + link scrolling (uses smoother when available)
+  // nav behavior
   (function navBehavior() {
     const menuBtn = $('#menu');
     const navEl = $('nav');
     const links = $$('nav .links a');
     if (menuBtn && navEl) {
-      // normalize menu button attributes
       menuBtn.setAttribute('role', 'button');
       if (!menuBtn.hasAttribute('aria-expanded')) menuBtn.setAttribute('aria-expanded', 'false');
       const updateMenuIcon = (open) => {
-        // swap icon classes if using boxicons
         const icon = menuBtn.querySelector('i');
-        if (icon) {
-          icon.classList.toggle('bx-menu-right', !open);
-          icon.classList.toggle('bx-x', open);
-        }
+        if (icon) { icon.classList.toggle('bx-menu-right', !open); icon.classList.toggle('bx-x', open); }
         menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
         menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       };
-      menuBtn.addEventListener('click', (ev) => {
-        const open = navEl.classList.toggle('menu-open');
-        updateMenuIcon(open);
-        // toggle body class to prevent background scrolling when menu open
-        document.body.classList.toggle('menu-open', open);
-        // move focus to first link when opening
-        if (open) {
-          const first = navEl.querySelector('.links a'); if (first) first.focus();
-        } else {
-          menuBtn.focus();
-        }
-      });
-
-      // close menu on ESC
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && navEl.classList.contains('menu-open')) {
-          navEl.classList.remove('menu-open'); updateMenuIcon(false); document.body.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // click outside to close (only when menu is open)
-      document.addEventListener('click', (e) => {
-        if (!navEl.classList.contains('menu-open')) return;
-        if (e.target.closest('nav')) return; // clicked inside nav
-        navEl.classList.remove('menu-open'); updateMenuIcon(false); document.body.classList.remove('menu-open');
-        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
-      });
+      menuBtn.addEventListener('click', () => { const open = navEl.classList.toggle('menu-open'); updateMenuIcon(open); document.body.classList.toggle('menu-open', open); if (open) { const first = navEl.querySelector('.links a'); if (first) first.focus(); } else menuBtn.focus(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && navEl.classList.contains('menu-open')) { navEl.classList.remove('menu-open'); updateMenuIcon(false); document.body.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); } });
+      document.addEventListener('click', (e) => { if (!navEl.classList.contains('menu-open')) return; if (e.target.closest('nav')) return; navEl.classList.remove('menu-open'); updateMenuIcon(false); document.body.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); });
     }
 
     const findIdInsensitive = (id) => { if (!id) return null; const e = document.getElementById(id); if (e) return e; const lower = id.toLowerCase(); return $$('[id]').find(el => el.id && el.id.toLowerCase() === lower) || null; };
@@ -140,45 +110,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     links.forEach(a => a.addEventListener('click', e => { const href = a.getAttribute('href'); if (!href || !href.startsWith('#')) return; e.preventDefault(); const id = href.slice(1).trim(); const target = findIdInsensitive(id); if (!target) return; if (navEl.classList.contains('menu-open')) { navEl.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); } try { history.pushState(null, '', '#' + id); } catch (err) {} scrollTo(target); }));
 
-    // Wire the standalone Contact button in the nav to the same smooth-scroll behavior
     const navContactBtn = $('nav .nav-btn');
-    if (navContactBtn) {
-      navContactBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = 'contact';
-        const target = findIdInsensitive(id);
-        if (!target) return;
-        if (navEl.classList.contains('menu-open')) {
-          navEl.classList.remove('menu-open');
-          if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
-        }
-        try { history.pushState(null, '', '#' + id); } catch (err) {}
-        scrollTo(target);
-      });
-    }
+    if (navContactBtn) navContactBtn.addEventListener('click', (e) => { e.preventDefault(); const id = 'contact'; const target = findIdInsensitive(id); if (!target) return; if (navEl.classList.contains('menu-open')) { navEl.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); } try { history.pushState(null, '', '#' + id); } catch (err) {} scrollTo(target); });
 
-  // Also wire any in-page anchors outside the main nav links (e.g. About -> Contact) to use smooth scrolling
-  const allAnchors = Array.from(document.querySelectorAll('a[href^="#"]'));
-  const pageAnchors = allAnchors.filter(a => !a.closest('nav .links'));
-    pageAnchors.forEach(a => {
-      a.addEventListener('click', (e) => {
-        const href = a.getAttribute('href');
-        if (!href || !href.startsWith('#')) return;
-        e.preventDefault();
-        const id = href.slice(1).trim();
-        const target = findIdInsensitive(id);
-        if (!target) return;
-        if (navEl.classList.contains('menu-open')) {
-          navEl.classList.remove('menu-open');
-          if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
-        }
-        try { history.pushState(null, '', '#' + id); } catch (err) {}
-        scrollTo(target);
-      });
-    });
+    const allAnchors = Array.from(document.querySelectorAll('a[href^="#"]'));
+    const pageAnchors = allAnchors.filter(a => !a.closest('nav .links'));
+    pageAnchors.forEach(a => a.addEventListener('click', (e) => { const href = a.getAttribute('href'); if (!href || !href.startsWith('#')) return; e.preventDefault(); const id = href.slice(1).trim(); const target = findIdInsensitive(id); if (!target) return; if (navEl.classList.contains('menu-open')) { navEl.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); } try { history.pushState(null, '', '#' + id); } catch (err) {} scrollTo(target); }));
   })();
 
-  // Hide nav on scroll down, show on scroll up
+  // hide nav on scroll
   (function hideNavOnScroll() { const nav = $('nav'); if (!nav) return; let last = (smoother && smoother.scrollTop) ? smoother.scrollTop() : (window.pageYOffset || document.documentElement.scrollTop || 0); let hidden = false; const TH = 3; gsap.ticker.add(() => { const current = (smoother && smoother.scrollTop) ? smoother.scrollTop() : (window.pageYOffset || document.documentElement.scrollTop || 0); const d = current - last; if (Math.abs(d) < 0.5) return; if (d > TH && !hidden) { nav.classList.add('nav-hidden'); hidden = true; } else if (d < -TH && hidden) { nav.classList.remove('nav-hidden'); hidden = false; } last = current; }); })();
 
+  // spin image on scroll (inside DOMContentLoaded so $ and smoother are available)
+  const spinEl = $('#spinImage');
+  if (spinEl) {
+    const stConfig = { trigger: spinEl, start: "top-=400", end: '+=800', scrub: true };
+    gsap.to(spinEl, { rotate: -360, ease: 'none', scrollTrigger: stConfig });
+    // If ScrollSmoother is active, refresh ScrollTrigger so it picks up sizes/scroller
+    if (smoother) ScrollTrigger.refresh();
+  }
+
+  const spinEl2 = $('#spinImage2');
+  if (spinEl2) {
+    const stConfig = { trigger: spinEl2, start: "top-=1000", end: '+=1500', scrub: true };
+    gsap.to(spinEl2, { rotate: -360, ease: 'none', scrollTrigger: stConfig });
+    // If ScrollSmoother is active, refresh ScrollTrigger so it picks up sizes/scroller
+    if (smoother) ScrollTrigger.refresh();
+  }
+
+});
+
+// SVG path demo (outside DOMContentLoaded)
+gsap.to("#rect", {
+  duration: 5,
+  repeat: 12,
+  repeatDelay: 3,
+  yoyo: true,
+  ease: "power1.inOut",
+  motionPath: { path: "#path", align: "#path", autoRotate: true, alignOrigin: [0.5, 0.5] }
 });
