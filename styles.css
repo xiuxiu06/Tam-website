@@ -256,6 +256,95 @@ nav ul a:hover{
   transform-origin: 50% 50%; /* ensures proper rotation center */
 }
 
+/* Custom cursor styles */
+/* Only apply on fine pointers (mouse); keep native cursor on touch devices */
+@media (pointer: fine) {
+  html, body {
+    cursor: none; /* hide native cursor */
+  }
+
+  .custom-cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: normal;
+  }
+
+  .cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: #111;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.12s ease, height 0.12s ease, background 0.12s ease;
+    will-change: transform;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05) inset;
+  }
+
+  .cursor-ring {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #9AEBA3;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: transform 0.12s ease, opacity 0.12s ease, border-color 0.12s ease;
+    opacity: 0.95;
+    will-change: transform, opacity;
+  }
+
+  /* Enlarge ring on hoverable elements (scaling is visual only) */
+  .custom-cursor.hover .cursor-ring {
+    transform: scale(1.6);
+    border-color: #fff9e9;
+  }
+
+  /* Active/click state */
+  .custom-cursor.active .cursor-dot {
+    transform: scale(0.6);
+    background: #9AEBA3;
+  }
+}
+
+/* For touch devices keep the default cursor */
+@media (pointer: coarse), (hover: none) {
+  .custom-cursor { display: none; }
+}
+
+/* Cursor ripple (polish) */
+.cursor-ripple {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  background: rgba(154,235,163,0.18);
+  mix-blend-mode: normal;
+}
+
+/* Focus-visible improvements for keyboard users */
+a:focus-visible, button:focus-visible, .tech-tag:focus-visible, .menu-toggle:focus-visible {
+  outline: 3px solid #9AEBA3;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor, .cursor-dot, .cursor-ring, .cursor-ripple { transition: none !important; }
+  .cursor-ring { opacity: 0.9; }
+}
+
 
 
 

@@ -138,6 +138,73 @@ document.addEventListener('DOMContentLoaded', () => {
     if (smoother) ScrollTrigger.refresh();
   }
 
+  // Custom cursor — refactored and self-contained
+  (function initCursor() {
+    const media = window.matchMedia && window.matchMedia('(pointer: fine)');
+    if (!media || !media.matches) return; // skip on touch devices
+
+    const cursorWrap = document.querySelector('.custom-cursor');
+    if (!cursorWrap) return;
+    cursorWrap.setAttribute('aria-hidden', 'true');
+    const dot = cursorWrap.querySelector('.cursor-dot');
+    const ring = cursorWrap.querySelector('.cursor-ring');
+    if (!dot || !ring) return;
+
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let lastX = mouseX, lastY = mouseY;
+    const lerp = (a, b, n) => (a + (b - a) * n);
+
+    // Center by percent so setting x/y is centered
+    gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
+
+    // Smooth follow via gsap.ticker
+    const tick = () => {
+      lastX = lerp(lastX, mouseX, 0.18);
+      lastY = lerp(lastY, mouseY, 0.18);
+      gsap.set([dot, ring], { x: lastX, y: lastY });
+    };
+    gsap.ticker.add(tick);
+
+    // Event handlers
+    const onMouseMove = (e) => { cursorWrap.style.display = ''; mouseX = e.clientX; mouseY = e.clientY; };
+    const hoverSelector = ['a', 'button', 'input', 'textarea', '.nav-btn', '.tech-tag', '.repo-btn', '.demo-btn', '.menu-toggle'].join(',');
+    const onOver = (e) => { if (e.target.closest && e.target.closest(hoverSelector)) cursorWrap.classList.add('hover'); };
+    const onOut = (e) => { if (e.target.closest && e.target.closest(hoverSelector)) cursorWrap.classList.remove('hover'); };
+    const onMouseDown = (e) => {
+      cursorWrap.classList.add('active');
+      const r = document.createElement('div');
+      r.className = 'cursor-ripple';
+      cursorWrap.appendChild(r);
+      gsap.set(r, { xPercent: -50, yPercent: -50, x: e.clientX, y: e.clientY, opacity: 0.9, scale: 0.2 });
+      gsap.to(r, { duration: 0.55, opacity: 0, scale: 3.0, ease: 'power2.out', onComplete: () => r.remove() });
+    };
+    const onMouseUp = () => cursorWrap.classList.remove('active');
+
+    // Keyboard: hide cursor on Tab so focus outlines are visible
+    const onKeyDown = (e) => { if (e.key === 'Tab') cursorWrap.style.display = 'none'; };
+
+    // Attach
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseover', onOver);
+    document.addEventListener('mouseout', onOut);
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('keydown', onKeyDown);
+
+    // Cleanup when leaving page
+    const teardown = () => {
+      gsap.ticker.remove(tick);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mouseout', onOut);
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+    window.addEventListener('pagehide', teardown);
+    window.addEventListener('beforeunload', teardown);
+  })();
+
 });
 
 // SVG path demo (outside DOMContentLoaded)
