@@ -1,7 +1,6 @@
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother, MotionPathPlugin);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother, MotionPathPlugin, Physics2DPlugin);
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Try to create the ScrollSmoother (fail gracefully if not available)
   let smoother = null;
   try {
     smoother = ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 2, effects: true, normalizeScroll: true });
@@ -10,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
 
-  // Small entrance for generic boxes
-  gsap.from('.box', { duration: 1, y: 100, opacity: 0, stagger: 0.3 });
+  if (document.querySelector('.box')) {
+    gsap.from('.box', { duration: 1, y: 100, opacity: 0, stagger: 0.3 });
+  }
 
-  // Horizontal scroller setup
   const horizontalSections = $$('.horizontal-section');
   const horizontalContainer = $('.horizontal-container');
   const horizontalSectionsWrap = $('.horizontal-sections');
@@ -32,14 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Pin projects header while horizontal scroll runs
     const projectsHeader = $('#projects-header');
     if (projectsHeader) {
       ScrollTrigger.create({ trigger: horizontalContainer, start: 'top top', end: () => '+=' + (horizontalSectionsWrap.offsetWidth - window.innerWidth), pin: '#projects-header', pinSpacing: false });
     }
   }
 
-  // Per-section animations and video autoplay/pause
   horizontalSections.forEach(section => {
     const box = section.querySelector('.box');
     if (box) gsap.from(box, { scale: 0, rotation: 180, scrollTrigger: { trigger: section, containerAnimation: horizontalScrollTween, start: 'left 80%', end: 'left 20%', scrub: true } });
@@ -58,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // lazy video play overlay
   $$('.project-video').forEach(pv => {
     const video = pv.querySelector('video');
     const src = video ? video.querySelector('source[data-src]') : null;
@@ -67,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn && video) btn.addEventListener('click', () => { load(); btn.style.display = 'none'; video.play().catch(() => {}); });
   });
 
-  // tech chips
   const TECH_ACTIVE_DURATION = 1400;
   $$('.tech-tag').forEach(tag => {
     if (!tag.hasAttribute('role')) tag.setAttribute('role', 'button');
@@ -77,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tag.addEventListener('click', activate); tag.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
   });
 
-  // running banner
   const runningBanner = $('#running-banner');
   if (runningBanner) {
     const l1 = runningBanner.querySelector('.line1');
@@ -86,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
     extend(l1); extend(l2); gsap.set(l1, { xPercent: 0 }); gsap.set(l2, { xPercent: -50 }); gsap.timeline({ scrollTrigger: { trigger: runningBanner, start: 'top center', end: '+=800', scrub: true } }).to(l1, { xPercent: -50, ease: 'none' }, 0).to(l2, { xPercent: 0, ease: 'none' }, 0);
   }
 
-  // nav behavior
   (function navBehavior() {
     const menuBtn = $('#menu');
     const navEl = $('nav');
@@ -118,15 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
     pageAnchors.forEach(a => a.addEventListener('click', (e) => { const href = a.getAttribute('href'); if (!href || !href.startsWith('#')) return; e.preventDefault(); const id = href.slice(1).trim(); const target = findIdInsensitive(id); if (!target) return; if (navEl.classList.contains('menu-open')) { navEl.classList.remove('menu-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); } try { history.pushState(null, '', '#' + id); } catch (err) {} scrollTo(target); }));
   })();
 
-  // hide nav on scroll
   (function hideNavOnScroll() { const nav = $('nav'); if (!nav) return; let last = (smoother && smoother.scrollTop) ? smoother.scrollTop() : (window.pageYOffset || document.documentElement.scrollTop || 0); let hidden = false; const TH = 3; gsap.ticker.add(() => { const current = (smoother && smoother.scrollTop) ? smoother.scrollTop() : (window.pageYOffset || document.documentElement.scrollTop || 0); const d = current - last; if (Math.abs(d) < 0.5) return; if (d > TH && !hidden) { nav.classList.add('nav-hidden'); hidden = true; } else if (d < -TH && hidden) { nav.classList.remove('nav-hidden'); hidden = false; } last = current; }); })();
 
-  // spin image on scroll (inside DOMContentLoaded so $ and smoother are available)
   const spinEl = $('#spinImage');
   if (spinEl) {
     const stConfig = { trigger: spinEl, start: "top-=400", end: '+=800', scrub: true };
     gsap.to(spinEl, { rotate: -360, ease: 'none', scrollTrigger: stConfig });
-    // If ScrollSmoother is active, refresh ScrollTrigger so it picks up sizes/scroller
     if (smoother) ScrollTrigger.refresh();
   }
 
@@ -134,14 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (spinEl2) {
     const stConfig = { trigger: spinEl2, start: "top-=1000", end: '+=1500', scrub: true };
     gsap.to(spinEl2, { rotate: -360, ease: 'none', scrollTrigger: stConfig });
-    // If ScrollSmoother is active, refresh ScrollTrigger so it picks up sizes/scroller
     if (smoother) ScrollTrigger.refresh();
   }
 
-  // Custom cursor — refactored and self-contained
   (function initCursor() {
     const media = window.matchMedia && window.matchMedia('(pointer: fine)');
-    if (!media || !media.matches) return; // skip on touch devices
+    if (!media || !media.matches) return;
 
     const cursorWrap = document.querySelector('.custom-cursor');
     if (!cursorWrap) return;
@@ -154,10 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastX = mouseX, lastY = mouseY;
     const lerp = (a, b, n) => (a + (b - a) * n);
 
-    // Center by percent so setting x/y is centered
     gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
 
-    // Smooth follow via gsap.ticker
     const tick = () => {
       lastX = lerp(lastX, mouseX, 0.18);
       lastY = lerp(lastY, mouseY, 0.18);
@@ -165,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     gsap.ticker.add(tick);
 
-    // Event handlers
     const onMouseMove = (e) => { cursorWrap.style.display = ''; mouseX = e.clientX; mouseY = e.clientY; };
     const hoverSelector = ['a', 'button', 'input', 'textarea', '.nav-btn', '.tech-tag', '.repo-btn', '.demo-btn', '.menu-toggle'].join(',');
     const onOver = (e) => { if (e.target.closest && e.target.closest(hoverSelector)) cursorWrap.classList.add('hover'); };
@@ -180,10 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const onMouseUp = () => cursorWrap.classList.remove('active');
 
-    // Keyboard: hide cursor on Tab so focus outlines are visible
     const onKeyDown = (e) => { if (e.key === 'Tab') cursorWrap.style.display = 'none'; };
 
-    // Attach
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseover', onOver);
     document.addEventListener('mouseout', onOut);
@@ -191,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mouseup', onMouseUp);
     window.addEventListener('keydown', onKeyDown);
 
-    // Cleanup when leaving page
     const teardown = () => {
       gsap.ticker.remove(tick);
       document.removeEventListener('mousemove', onMouseMove);
@@ -204,15 +186,122 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('pagehide', teardown);
     window.addEventListener('beforeunload', teardown);
   })();
-
 });
 
-// SVG path demo (outside DOMContentLoaded)
-gsap.to("#rect", {
-  duration: 5,
-  repeat: 12,
-  repeatDelay: 3,
-  yoyo: true,
-  ease: "power1.inOut",
-  motionPath: { path: "#path", align: "#path", autoRotate: true, alignOrigin: [0.5, 0.5] }
-});
+if (document.querySelector('#rect') && document.querySelector('#path')) {
+  gsap.to('#rect', {
+    duration: 5,
+    repeat: 12,
+    repeatDelay: 3,
+    yoyo: true,
+    ease: 'power1.inOut',
+    motionPath: { path: '#path', align: '#path', autoRotate: true, alignOrigin: [0.5, 0.5] }
+  });
+}
+
+const grid = document.querySelector('.grid');
+const rows = grid ? [...grid.querySelectorAll('.row')] : [...document.querySelectorAll('.row')];
+const cells = grid ? [...grid.querySelectorAll('.cell')] : [...document.querySelectorAll('.cell')];
+
+let clicked = false;
+let reset_all = false;
+
+const pull_distance = 120;
+
+const updateCellPositions = () => {
+  cells.forEach((cell) => {
+    const rect = cell.getBoundingClientRect();
+    cell.center_position = {
+      x: (rect.left + rect.right) / 2,
+      y: (rect.top + rect.bottom) / 2,
+    };
+  });
+};
+
+const handleCellClick = (e, i) => {
+  if (clicked) return;
+  clicked = true;
+
+  gsap.to('.cell', {
+    duration: 1.6,
+    physics2D: {
+      velocity: 'random(400, 1000)',
+      angle: 'random(250, 290)',
+      gravity: 2000
+    },
+    stagger: {
+      grid: [rows.length, rows[0].children.length],
+      from: i,
+      amount: 0.3
+    },
+    onComplete: function () { this.timeScale(-1.3); },
+    onReverseComplete: () => { clicked = false; reset_all = true; handlePointerMove(); },
+  });
+};
+
+const handlePointerMove = (e = { clientX: -pull_distance * 2, clientY: -pull_distance * 2 }) => {
+  if (clicked) return;
+
+  const { clientX: pointer_x, clientY: pointer_y } = e || { clientX: -pull_distance * 2, clientY: -pull_distance * 2 };
+  cells.forEach((cell) => {
+    const diff_x = pointer_x - cell.center_position.x;
+    const diff_y = pointer_y - cell.center_position.y;
+    const distance = Math.sqrt(diff_x * diff_x + diff_y * diff_y);
+
+    if (distance < pull_distance) {
+      const percent = 1 - Math.min(distance / pull_distance, 1);
+      const strength = 0.95;
+      cell.pulled = true;
+      gsap.to(cell, { duration: 0.18, x: diff_x * percent * strength, y: diff_y * percent * strength, ease: 'power2.out' });
+    } else {
+      if (!cell.pulled) return;
+      cell.pulled = false;
+      gsap.to(cell, { duration: 1, x: 0, y: 0, ease: "elastic.out(1, 0.3)" });
+    }
+  });
+
+  if (reset_all) {
+    reset_all = false;
+    gsap.to(cells, { duration: 1, x: 0, y: 0, ease: "elastic.out(1, 0.3)" });
+  }
+};
+
+const init = () => {
+  if (!cells || cells.length === 0) {
+    console.warn('[physics-grid] No .cell elements found. Grid interaction disabled.');
+    return;
+  }
+
+  updateCellPositions();
+  window.addEventListener('load', () => { updateCellPositions(); setTimeout(updateCellPositions, 300); });
+  window.addEventListener('resize', updateCellPositions);
+  window.addEventListener('pointermove', handlePointerMove);
+  document.body.addEventListener('pointerleave', () => handlePointerMove({ clientX: -pull_distance * 2, clientY: -pull_distance * 2 }));
+
+  cells.forEach((cell, i) => cell.addEventListener('pointerup', (e) => handleCellClick(e, i)));
+
+  const contact = document.querySelector('.contact');
+  if (contact) {
+    contact.addEventListener('pointerup', (e) => {
+      const interactive = e.target.closest && e.target.closest('a, button, input, textarea, select, label, .nav-btn, .tech-tag, .repo-btn, .demo-btn');
+      if (interactive) return;
+
+      const px = e.clientX;
+      const py = e.clientY;
+      let bestIndex = -1;
+      let bestDist = Infinity;
+      cells.forEach((cell, i) => {
+        if (!cell.center_position) return;
+        const dx = px - cell.center_position.x;
+        const dy = py - cell.center_position.y;
+        const d = Math.hypot(dx, dy);
+        if (d < bestDist) { bestDist = d; bestIndex = i; }
+      });
+
+      if (bestIndex >= 0) handleCellClick(e, bestIndex);
+    });
+  }
+};
+
+init();
+
