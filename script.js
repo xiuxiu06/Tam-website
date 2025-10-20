@@ -241,6 +241,9 @@ const handleCellClick = (e, i) => {
 
 const handlePointerMove = (e = { clientX: -pull_distance * 2, clientY: -pull_distance * 2 }) => {
   if (clicked) return;
+  // Ensure positions are available (useful after client-side navigation or layout shifts)
+  if (!cells || !cells.length) return;
+  if (!cells[0].center_position) updateCellPositions();
 
   const { clientX: pointer_x, clientY: pointer_y } = e || { clientX: -pull_distance * 2, clientY: -pull_distance * 2 };
   cells.forEach((cell) => {
@@ -300,6 +303,49 @@ const init = () => {
 
       if (bestIndex >= 0) handleCellClick(e, bestIndex);
     });
+  }
+
+  // Add a subtle 'Click anywhere' prompt and a cursor tooltip to invite interaction
+  const clickPrompt = document.createElement('div');
+  clickPrompt.className = 'click-prompt';
+  clickPrompt.textContent = "Click anywhere";
+  document.querySelector('.contact').appendChild(clickPrompt);
+
+  const cursorPrompt = document.createElement('div');
+  cursorPrompt.className = 'cursor-prompt';
+  cursorPrompt.textContent = 'Click';
+  document.body.appendChild(cursorPrompt);
+
+  let promptShown = false;
+  const showPrompt = () => {
+    if (promptShown) return; promptShown = true;
+    clickPrompt.classList.add('visible');
+    setTimeout(() => clickPrompt.classList.remove('visible'), 4000);
+  };
+
+  let cursorTimer = null;
+  const showCursorPrompt = (x, y) => {
+    gsap.set(cursorPrompt, { x, y });
+    cursorPrompt.classList.add('visible');
+    if (cursorTimer) clearTimeout(cursorTimer);
+    cursorTimer = setTimeout(() => cursorPrompt.classList.remove('visible'), 900);
+  };
+
+  // Show prompt when the user first moves into the contact area
+  contact.addEventListener('pointerenter', (e) => { showPrompt(); showCursorPrompt(e.clientX, e.clientY); });
+  contact.addEventListener('pointermove', (e) => { if (cursorPrompt.classList.contains('visible')) gsap.set(cursorPrompt, { x: e.clientX, y: e.clientY }); });
+
+  // Hide prompts on first click so they don't get in the way
+  const hideAllPrompts = () => { clickPrompt.classList.remove('visible'); cursorPrompt.classList.remove('visible'); };
+  contact.addEventListener('pointerup', () => { hideAllPrompts(); });
+  // ensure positions are accurate after init
+  updateCellPositions();
+  // refresh positions when ScrollTrigger refreshes (covers smoothers and other layout changes)
+  if (window.ScrollTrigger && typeof ScrollTrigger.addEventListener === 'function') {
+    ScrollTrigger.addEventListener('refresh', updateCellPositions);
+  } else if (window.ScrollTrigger && ScrollTrigger.refresh) {
+    // fallback: call once after a short delay in case ScrollTrigger isn't ready yet
+    setTimeout(() => { try { ScrollTrigger.refresh(); } catch (e) {} }, 250);
   }
 };
 

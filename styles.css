@@ -912,4 +912,42 @@ path {
 /* ensure contact content sits above the decorative grid */
 .contact-inner { position: relative; z-index: 2; }
 
+/* Click prompt shown in contact section to invite interaction */
+.click-prompt {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  color: var(--second-background);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms cubic-bezier(.2,.9,.2,1), transform 220ms ease;
+}
+.click-prompt.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Small tooltip that can follow the cursor to reinforce clicking */
+.cursor-prompt {
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -150%);
+  background: rgba(154,235,163,0.95);
+  color: #081018;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 10001;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+.cursor-prompt.visible { opacity: 1; }
+
+
 
