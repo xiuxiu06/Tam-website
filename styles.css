@@ -564,7 +564,7 @@ a:focus-visible, button:focus-visible, .tech-tag:focus-visible, .menu-toggle:foc
   display: flex;
   gap: 2rem;
   align-items: stretch;
-  width: min(1100px, 90%);
+  width: min(1100px, 70%);
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border-radius: 12px;
   padding: 1.5rem;
@@ -702,9 +702,10 @@ a:focus-visible, button:focus-visible, .tech-tag:focus-visible, .menu-toggle:foc
 .project-tech li { font-size: .95rem; color: #cfead3 }
 
 @media (max-width: 900px) {
-  .project-card { flex-direction: column; width: 95%; }
+  .project-card { flex-direction: column; width: 95%; height: auto;}
   .project-tech { width: 100%; flex-basis: auto; border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.04); padding-top: .75rem }
   .project-number { font-size: 1.6rem }
+  .project-left { flex: none; }
 }
 
 .horizontal-section h2 {
@@ -766,7 +767,7 @@ a:focus-visible, button:focus-visible, .tech-tag:focus-visible, .menu-toggle:foc
 
 /* Make contact card and decorative grid adapt on smaller screens */
 @media (max-width: 900px) {
-  .physics-grid { height: 40vh; }
+  .physics-grid { top: auto; bottom: 0; height: 40vh; }
   .grid { grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); gap: 10px; }
   .cell::before { width: clamp(5px, 1.6vw, 12px); height: clamp(5px, 1.6vw, 12px); }
   .contact-card { padding: 2rem; border-radius: 14px; }
@@ -774,7 +775,7 @@ a:focus-visible, button:focus-visible, .tech-tag:focus-visible, .menu-toggle:foc
 }
 
 @media (max-width: 520px) {
-  .physics-grid { height: 36vh; }
+  .physics-grid { top: auto; bottom: 0; height: 36vh; }
   .grid { grid-template-columns: repeat(auto-fit, minmax(24px, 1fr)); gap: 8px; }
   .cell::before { width: 8px; height: 8px; }
   .contact-card { padding: 1.25rem; border-radius: 12px; }
@@ -868,10 +869,12 @@ path {
 
 .physics-grid { 
   position: absolute;
-  height: 100vh;
+  inset: 0; /* constrain to the contact container bounds */
   width: 100%;
+  height: 100%;
   pointer-events: auto; 
-  z-index: 1; 
+  z-index: 1;
+  overflow: hidden;
 }
 
 .grid {

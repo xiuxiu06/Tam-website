@@ -317,7 +317,7 @@ const init = () => {
   document.body.appendChild(cursorPrompt);
 
   let promptShown = false;
-  const showPrompt = () => {
+  const showPromptOnce = () => {
     if (promptShown) return; promptShown = true;
     clickPrompt.classList.add('visible');
     setTimeout(() => clickPrompt.classList.remove('visible'), 4000);
@@ -331,9 +331,24 @@ const init = () => {
     cursorTimer = setTimeout(() => cursorPrompt.classList.remove('visible'), 900);
   };
 
-  // Show prompt when the user first moves into the contact area
-  contact.addEventListener('pointerenter', (e) => { showPrompt(); showCursorPrompt(e.clientX, e.clientY); });
-  contact.addEventListener('pointermove', (e) => { if (cursorPrompt.classList.contains('visible')) gsap.set(cursorPrompt, { x: e.clientX, y: e.clientY }); });
+  const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+  if (isCoarse) {
+    // On touch devices, show the click prompt when the contact section scrolls into view
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          showPromptOnce();
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.12 });
+    io.observe(contact);
+  } else {
+    // Fine pointer devices: show prompt on hover and show a small cursor tooltip
+    contact.addEventListener('pointerenter', (e) => { showPromptOnce(); showCursorPrompt(e.clientX, e.clientY); });
+    contact.addEventListener('pointermove', (e) => { if (cursorPrompt.classList.contains('visible')) gsap.set(cursorPrompt, { x: e.clientX, y: e.clientY }); });
+  }
 
   // Hide prompts on first click so they don't get in the way
   const hideAllPrompts = () => { clickPrompt.classList.remove('visible'); cursorPrompt.classList.remove('visible'); };
